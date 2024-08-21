@@ -1,15 +1,12 @@
 
-//#define SD_ChipSelectPin 53  //example uses hardware SS pin 53 on Mega2560
-#define SD_ChipSelectPin 10  //using digital pin 4 on arduino nano 328, can use other pins
+#define SD_ChipSelectPin 10  
 #define DPin_Speaker      9
 #include <SPI.h>
 #include <SD.h>
 #include <string.h>
 #include <TMRpcm.h>
 
-TMRpcm tmrpcm;   // create an object for use in this sketch
-
-
+TMRpcm tmrpcm; 
 File root;
 
 
@@ -17,19 +14,20 @@ File root;
 
 void setup(){
   
-  tmrpcm.speakerPin = DPin_Speaker; //5,6,11 or 46 on Mega, 9 on Uno, Nano, etc
+  tmrpcm.speakerPin = DPin_Speaker; 
   tmrpcm.setVolume(6);
   Serial.begin(9600);
   
   noTone(DPin_Speaker);
-  while (!SD.begin(SD_ChipSelectPin)) {  // see if the card is present and can be initialized:
+
+  while (!SD.begin(SD_ChipSelectPin)) {  
     Serial.println("SD fail");  
     tone(DPin_Speaker, 440, 100);
     delay(200);
     tone(DPin_Speaker, 440, 100);
     delay(200);
   }
-  //tone(DPin_Speaker, 440, 200);
+  
   root = SD.open("/");
   printDirectory(root);
 }
@@ -37,9 +35,6 @@ void setup(){
 
 
 void loop(){  
-  //tone(8, 440, 200);
-
-  //tmrpcm.play("sentry_scan.wav");
   delay(100);
 
 }
@@ -50,15 +45,16 @@ void printDirectory(File dir) {
 
     File entry =  dir.openNextFile();
     if (! entry) {
-      // no more files
+      // No more files present.
       break;
     }
     if (entry.isDirectory()) {
+
       printDirectory(entry);
       entry.close();
-    } else {
-      // files have sizes, directories do not
-      
+    } 
+    else {
+
       String filename = entry.name();
       entry.close();
       
@@ -69,7 +65,10 @@ void printDirectory(File dir) {
         Serial.print("> ");
         Serial.println(filename.c_str());
         tmrpcm.play(filename.c_str());
-        while(tmrpcm.isPlaying()){delay(100);}
+
+        while(tmrpcm.isPlaying()){
+          delay(100);
+          }
       }
     }
   }
